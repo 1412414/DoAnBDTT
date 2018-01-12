@@ -19,6 +19,7 @@
   "homepage": "https://github.com/1412414/DoAnBDTT#readme",
   "dependencies": {
     "body-parser": "^1.18.2",
+    "d3-hierarchy": "^1.1.5",
     "express": "^4.16.2",
     "express-handlebars": "^3.0.0",
     "handlebars": "^4.0.11"
