@@ -1,177 +1,149 @@
- // Set up size 
- var width = 750;
-var height = width;
-       
-        // Set up projection that map is using 
-        var projection = d3.geoMercator()
-            .center([-122.433701, 37.767683]) 
-            // San Francisco, roughly   
-            .scale(225000)     
-            .translate([width / 2, height / 2]); 
+function kiemTraCoTheThemVaoMang(array, data, attr) {
+  $.each(data, function(index, value) {
+    var canAdd = 1;
 
-        // Add an svg element to the DOM 
-        var svg = d3.select("#svg").append("svg")    
-            .attr("width", width)  
-            .attr("height", height); 
+    $.each(array, function(index2, value2) {
+      if (value[attr] == value2) {
+        canAdd = 0;
+      }
+    });
 
-        // Add svg map at correct size
-        svg.append("image")           
-            .attr("width", width)           
-            .attr("height", height)          
-            .attr("xlink:href", "images/SanFranciscoCityWeb-Illustrator.svg");  
+    if (canAdd == 1) {
+      array.push(value[attr]);
+    }
+  });
+}
 
-        d3.csv("csv/trees.csv", function(data) {
-            console.log(data[0]);
+function kiemTraTonTaiVaTangSize(valFirst, valSecond, valThird, json) {
+  $.each(json.children, function(indexFirst, valueFirst) {
 
-            // Get Species
-            SelectSpecies = [];
-            exist = 0;
-            for (var i = 0; i < data.length; i++) {
-                for (var j = 0; j < SelectSpecies.length; j++) {
-                    if (SelectSpecies[j] == data[i].qSpecies) {
-                        exist = 1;
-                        break;
-                    }
-                }
-
-                if (exist == 0) {
-                    SelectSpecies.push(data[i].qSpecies);
-                }
-                else {
-                    exist = 0;
-                }
-            } 
-
-            // Sort SelectSpecies
-            SelectSpecies.sort();
-
-            // Add Species to Select
-            for (var j = 0; j < SelectSpecies.length; j++) {
-                $("#SelectSpecies").append("<option>" + SelectSpecies[j] + "</option>");
+    if (valueFirst.name == valFirst) {
+      $.each(valueFirst.children, function(indexSecond, valueSecond) {
+        if (valueSecond.name == valSecond) {
+          $.each(valueSecond.children, function(indexThird, valueThird) {
+            if (valueThird.name == valThird) {
+              valueThird.size += 1;
             }
+          });
+        }
+      });
+    }
+  });
+}
 
-            // Get PlotSize
-            PlotSize = [];
-            exist = 0;
-            for (var i = 0; i < data.length; i++) {
-                for (var j = 0; j < PlotSize.length; j++) {
-                    if (PlotSize[j] == data[i].PlotSize.toUpperCase()) {
-                        exist = 1;
-                        break;
-                    }
-                }
+function tangSize(json, data, firstAttr, secondAttr, thirdAttr) {
+  $.each(data, function(index, value) {
+    console.log(value[firstAttr] + " " + value[secondAttr] + " " + value[thirdAttr]);
+    kiemTraTonTaiVaTangSize(value[firstAttr], value[secondAttr], value[thirdAttr], json);
+  });
+}
 
-                if (exist == 0) {
-                    PlotSize.push(data[i].PlotSize.toUpperCase());
-                }
-                else {
-                    exist = 0;
-                }
-            } 
+function chuyenCSVThanhJSON(data, firstAttr, secondAttr, thirdAttr) {
+  firstAttrArray = [];
+  secondAttrArray = [];
+  thirdAttrArray = [];
 
-            // Sort PlotSize
-            PlotSize.sort();
+  kiemTraCoTheThemVaoMang(firstAttrArray, data, firstAttr);
+  kiemTraCoTheThemVaoMang(secondAttrArray, data, secondAttr);
+  kiemTraCoTheThemVaoMang(thirdAttrArray, data, thirdAttr);
 
-            // Add PlotSize to checkbox
-            for (var j = 0; j < PlotSize.length; j++) {
-                $("#SelectPlotSize").append("<option>" + PlotSize[j] + "</option>");
-            }
+  console.log(firstAttrArray);
+  console.log(secondAttrArray);
+  console.log(thirdAttrArray);
 
-            // Add Trees
-            var g = svg.append("g");
+  var JSON_Data = {
+    name: "no",
+    children: []
+  }
 
-            var circle = g.selectAll("circle")
-                .data(data).enter()  
-                .append("svg:circle")
-                .attr("r", 2).attr("stroke", "black").attr("stroke-width", 0.5).attr("fill", "green")
-                .attr("id", function(d) {
-                    return d.TreeID;
-                })
-                .attr("species", function(d) {
-                    return d.qSpecies;
-                })
-                .attr("plotsize", function(d) {
-                    return d.PlotSize.toUpperCase();
-                })
-                .attr("cx", function(d) {
-                    return projection([d.Longitude, data.Latitude])[0];
-                })
-                .attr("cy", function(d) {
-                    return projection([d.Longitude, d.Latitude])[1];
-                })
-                .append("svg:title")
-                .text(function(d) {
-                    return d.TreeID;
-                });
+  $.each(firstAttrArray, function(index1, value1) {
+    var node1 = {
+      name: value1,
+      children: []
+    }
 
-            // When clicking a circle
-            $("circle").click(function() {
-                var id = this.id;
-                
-                for (var i = 0; i < data.length; i++) {
-                    if (data[i].TreeID == id) {
-                        $("#TreeID").text(data[i].TreeID);
-                        $("#Longitude").text(data[i].Longitude);
-                        $("#Latitude").text(data[i].Latitude);
-                        $("#PlotSize").text(data[i].PlotSize.toUpperCase());
-                        $("#Address").text(data[i].qAddress);
-                        $("#SiteInfo").text(data[i].qSiteInfo);
-                        $("#Species").text(data[i].qSpecies);
+    $.each(secondAttrArray, function(index2, value2) {
+      var node2 = {
+        name: value2,
+        children: []
+      }
 
-                        break;
-                    }
-                }
-            });
+      $.each(thirdAttrArray, function(index3, value3) {
+        var node3 = {
+          name: value3,
+          size: 0
+        }
 
-            // When selecting a species
-            $("#SelectSpecies").change(function() {
-                var SpeciesSelected = this.value;
-                var PlotSizeSelected = $("#SelectPlotSize").find(":selected").text();
+        node2.children.push(node3);
+      });
 
-                if (SpeciesSelected == "All" && PlotSizeSelected == "All") {
-                    $("circle").show();
-                }
-                else { 
-                    if (SpeciesSelected == "All") {
-                        $("circle").hide();
-                        $("[plotsize='" + PlotSizeSelected + "']").show();
-                    }
-                    else {
-                        if (PlotSizeSelected == "All") {
-                            $("circle").hide();
-                            $("[species='" + SpeciesSelected + "']").show();
-                        }
-                        else {
-                            $("circle").hide();
-                            $("[species='" + SpeciesSelected + "'][plotsize='" + PlotSizeSelected + "']").show();
-                        }
-                    }     
-                }
-            });
+      node1.children.push(node2);
+    });
 
-            // When selecting a plotsize
-            $("#SelectPlotSize").change(function() {
-                var SpeciesSelected = $("#SelectSpecies").find(":selected").text();
-                var PlotSizeSelected = this.value;
+    JSON_Data.children.push(node1);
+  });
 
-                if (SpeciesSelected == "All" && PlotSizeSelected == "All") {
-                    $("circle").show();
-                }
-                else { 
-                    if (SpeciesSelected == "All") {
-                        $("circle").hide();
-                        $("[plotsize='" + PlotSizeSelected + "']").show();
-                    }
-                    else {
-                        if (PlotSizeSelected == "All") {
-                            $("circle").hide();
-                            $("[species='" + SpeciesSelected + "']").show();
-                        }
-                        else {
-                            $("circle").hide();
-                            $("[species='" + SpeciesSelected + "'][plotsize='" + PlotSizeSelected + "']").show();
-                        }
-                    }     
-                }
-            });
-        });
+  tangSize(JSON_Data, data, firstAttr, secondAttr, thirdAttr);
+
+  return JSON_Data;
+}
+
+// Đặt kích thước cho svg
+var width = 1200;
+var height = 800;
+
+// Thêm svg
+var svg = d3.select("#svg").append("svg")
+            .attr("width", width)
+            .attr("height", height);
+
+// Tạo treemap
+var fader = function(color) { return d3.interpolateRgb(color, "#fff")(0.2); },
+    color = d3.scaleOrdinal(d3.schemeCategory20.map(fader)),
+    format = d3.format(",d");
+
+var treemap = d3.treemap()
+    .tile(d3.treemapResquarify)
+    .size([width, height])
+    .round(true)
+    .paddingInner(1);
+
+d3.csv("csv/bank-additional-100.csv", function(data) {
+  var JSON_Data = chuyenCSVThanhJSON(data, "education", "job", "marital");
+  console.log(JSON_Data);
+
+  var root = d3.hierarchy(JSON_Data)
+      .eachBefore(function(d) { d.data.id = (d.parent ? d.parent.data.id + "." : "") + d.data.name; })
+      .sum(function(d) { return d.size; })
+      .sort(function(a, b) { return b.height - a.height || b.value - a.value; });
+
+  treemap(root);
+
+  var cell = svg.selectAll("g")
+    .data(root.leaves())
+    .enter().append("g")
+    .attr("transform", function(d) { return "translate(" + d.x0 + "," + d.y0 + ")"; });
+
+    cell.append("rect")
+      .attr("id", function(d) { return d.data.id; })
+      .attr("width", function(d) { return d.x1 - d.x0; })
+      .attr("height", function(d) { return d.y1 - d.y0; })
+      .attr("fill", function(d) { return color(d.parent.data.id) });
+
+  cell.append("clipPath")
+      .attr("id", function(d) { return "clip-" + d.data.id; })
+    .append("use")
+      .attr("xlink:href", function(d) { return "#" + d.data.id; });
+
+  cell.append("text")
+      .attr("clip-path", function(d) { return "url(#clip-" + d.data.id + ")"; })
+    .selectAll("tspan")
+      .data(function(d) { return d.data.name.split(/(?=[A-Z][^A-Z])/g); })
+    .enter().append("tspan")
+      .attr("x", 4)
+      .attr("y", function(d, i) { return 13 + i * 10; })
+      .text(function(d) { return d; });
+
+  cell.append("title")
+      .text(function(d) { return d.data.id + "\n" + format(d.value); });
+});
