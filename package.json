@@ -1,0 +1,26 @@
+{
+  "name": "doanbdtt",
+  "version": "1.0.0",
+  "description": "do an bdtt",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/1412414/DoAnBDTT.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/1412414/DoAnBDTT/issues"
+  },
+  "homepage": "https://github.com/1412414/DoAnBDTT#readme",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "express": "^4.16.2",
+    "express-handlebars": "^3.0.0",
+    "handlebars": "^4.0.11"
+  }
+}
