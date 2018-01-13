@@ -1,3 +1,8 @@
+// Kiểm tra xem các giá trị cột attr trong data có thể đưa vào array hay không
+// Thêm vào được khi trong array không chứa giá trị này
+// VD: cột tuổi trong data
+// giá trị là 30 và đã tồn tại trong bảng array thì không thêm vào
+// Giá trị là 15 chưa tồn tại trong bảng array thì được thêm vào
 function kiemTraCoTheThemVaoMang(array, data, attr) {
   $.each(data, function(index, value) {
     var canAdd = 1;
@@ -14,9 +19,10 @@ function kiemTraCoTheThemVaoMang(array, data, attr) {
   });
 }
 
+// Hàm kiểm tra xem bộ 3 giá trị này có trong json data không nếu có thì tăng size
+// VD nam 15 tuổi nghề nghiệp công nhân có trong json thì tăng size
 function kiemTraTonTaiVaTangSize(valFirst, valSecond, valThird, json) {
   $.each(json.children, function(indexFirst, valueFirst) {
-
     if (valueFirst.name == valFirst) {
       $.each(valueFirst.children, function(indexSecond, valueSecond) {
         if (valueSecond.name == valSecond) {
@@ -31,18 +37,32 @@ function kiemTraTonTaiVaTangSize(valFirst, valSecond, valThird, json) {
   });
 }
 
+
+// Hàm để tăng size bộ giá trị json, bằng cách xét bộ 3 dữ liệu trong data có trong json hay không
 function tangSize(json, data, firstAttr, secondAttr, thirdAttr) {
   $.each(data, function(index, value) {
     console.log(value[firstAttr] + " " + value[secondAttr] + " " + value[thirdAttr]);
-    kiemTraTonTaiVaTangSize(value[firstAttr], value[secondAttr], value[thirdAttr], json);
+
+    // Chỉ xét những dòng trả lời là no
+    if (value.y == "no") {
+      console.log(value.y);
+      kiemTraTonTaiVaTangSize(value[firstAttr], value[secondAttr], value[thirdAttr], json);
+    }
   });
 }
 
+// Hàm chuyển dữ liệu CSV thành JSON
 function chuyenCSVThanhJSON(data, firstAttr, secondAttr, thirdAttr) {
+  // Tạo 3 mảng đại diện cho 3 cột dữ liệu
+  // Các mảng sẽ chứa các giá trị duy nhất của cột dữ liệu
+  // Ví dụ cột giới tính thì chỉ có giá trị là Nam và Nữ
   firstAttrArray = [];
   secondAttrArray = [];
   thirdAttrArray = [];
 
+  // Kiểm tra xem các giá trị có thể được đưa vào mảng không
+  // Ví dụ trong mảng đã có Nam rồi thì không được thêm Nam vào nữa , chỉ được thêm Nữ hoặc khác vào
+  // Làm tương tự như vậy cho cả 3 mảng đại diện cho 3 cột của bộ dữ liệu
   kiemTraCoTheThemVaoMang(firstAttrArray, data, firstAttr);
   kiemTraCoTheThemVaoMang(secondAttrArray, data, secondAttr);
   kiemTraCoTheThemVaoMang(thirdAttrArray, data, thirdAttr);
@@ -51,11 +71,13 @@ function chuyenCSVThanhJSON(data, firstAttr, secondAttr, thirdAttr) {
   console.log(secondAttrArray);
   console.log(thirdAttrArray);
 
+  // Cấu trúc JSON để thực hiện Treemap gồm tên của node và các con của nó
   var JSON_Data = {
     name: "no",
     children: []
   }
 
+  // Chạy 3 vòng lập để tạo thành cấu trúc JSON, giống tree
   $.each(firstAttrArray, function(index1, value1) {
     var node1 = {
       name: value1,
@@ -83,8 +105,11 @@ function chuyenCSVThanhJSON(data, firstAttr, secondAttr, thirdAttr) {
     JSON_Data.children.push(node1);
   });
 
+  // Hàm này để tăng size ví dụ: Tuôi 35, giới tính nam, nghề nghiệp công nhân 
+  // Có 5 dòng như vậy trong bộ dữ liệu thì size bẳng 5
   tangSize(JSON_Data, data, firstAttr, secondAttr, thirdAttr);
 
+  // Trả về dữ liệu JSON
   return JSON_Data;
 }
 
@@ -108,7 +133,10 @@ var treemap = d3.treemap()
     .round(true)
     .paddingInner(1);
 
-d3.csv("csv/bank-additional-100.csv", function(data) {
+// Bắt đầu lấy dữ liệu từ file csv
+d3.csv("csv/bank-additional.csv", function(data) {
+  // Đưa dữ liệu csv vào hàm chuyenCSVThanhJSON để lấy ra dữ liệu kiểu JSON
+  // 3 thuộc tính đó lên tên của cột trong bộ dữ liệu
   var JSON_Data = chuyenCSVThanhJSON(data, "education", "job", "marital");
   console.log(JSON_Data);
 

@@ -3,8 +3,7 @@ var controllers = require('../../app/controllers');
 
 module.exports = function(app) {
   var homeRoutes = router()
-    .get('/', controllers.home.index)
-    .get('/example', controllers.home.example);
+    .get('/', controllers.home.index);
 
   app.use('/', homeRoutes);
 
