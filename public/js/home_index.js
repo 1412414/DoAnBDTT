@@ -41,11 +41,8 @@ function kiemTraTonTaiVaTangSize(valFirst, valSecond, valThird, json) {
 // Hàm để tăng size bộ giá trị json, bằng cách xét bộ 3 dữ liệu trong data có trong json hay không
 function tangSize(json, data, firstAttr, secondAttr, thirdAttr) {
   $.each(data, function(index, value) {
-    console.log(value[firstAttr] + " " + value[secondAttr] + " " + value[thirdAttr]);
-
     // Chỉ xét những dòng trả lời là no
     if (value.y == "no") {
-      console.log(value.y);
       kiemTraTonTaiVaTangSize(value[firstAttr], value[secondAttr], value[thirdAttr], json);
     }
   });
@@ -66,10 +63,6 @@ function chuyenCSVThanhJSON(data, firstAttr, secondAttr, thirdAttr) {
   kiemTraCoTheThemVaoMang(firstAttrArray, data, firstAttr);
   kiemTraCoTheThemVaoMang(secondAttrArray, data, secondAttr);
   kiemTraCoTheThemVaoMang(thirdAttrArray, data, thirdAttr);
-
-  console.log(firstAttrArray);
-  console.log(secondAttrArray);
-  console.log(thirdAttrArray);
 
   // Cấu trúc JSON để thực hiện Treemap gồm tên của node và các con của nó
   var JSON_Data = {
@@ -113,65 +106,135 @@ function chuyenCSVThanhJSON(data, firstAttr, secondAttr, thirdAttr) {
   return JSON_Data;
 }
 
-// Đặt kích thước cho svg
-var width = 1200;
-var height = 800;
+function treemap() {
+  $("#svg").empty();
+  $("#circlePacking").removeClass("btn-primary").addClass("btn-default");
+  $("#treemap").removeClass("btn-default").addClass("btn-primary");
 
-// Thêm svg
-var svg = d3.select("#svg").append("svg")
-            .attr("width", width)
-            .attr("height", height);
+  // Đặt kích thước cho svg
+  var width = 1320;
+  var height = 800;
 
-// Tạo treemap
-var fader = function(color) { return d3.interpolateRgb(color, "#fff")(0.2); },
-    color = d3.scaleOrdinal(d3.schemeCategory20.map(fader)),
+  // Thêm svg
+  var svg = d3.select("#svg").append("svg")
+              .attr("width", width)
+              .attr("height", height);
+
+  // Tạo treemap
+  var fader = function(color) { return d3.interpolateRgb(color, "#fff")(0.2); },
+      color = d3.scaleOrdinal(d3.schemeCategory20.map(fader)),
+      format = d3.format(",d");
+
+  var treemap = d3.treemap()
+      .tile(d3.treemapResquarify)
+      .size([width, height])
+      .round(true)
+      .paddingInner(1);
+
+  // Bắt đầu lấy dữ liệu từ file csv
+  d3.csv("csv/bank-additional.csv", function(data) {
+    // Đưa dữ liệu csv vào hàm chuyenCSVThanhJSON để lấy ra dữ liệu kiểu JSON
+    // 3 thuộc tính đó lên tên của cột trong bộ dữ liệu
+    var JSON_Data = chuyenCSVThanhJSON(data, "education", "job", "marital");
+    console.log("Json Data: ");
+    console.log(JSON_Data);
+
+    var root = d3.hierarchy(JSON_Data)
+        .eachBefore(function(d) { d.data.id = (d.parent ? d.parent.data.id + "." : "") + d.data.name; })
+        .sum(function(d) { return d.size; })
+        .sort(function(a, b) { return b.height - a.height || b.value - a.value; });
+
+    treemap(root);
+
+    console.log("Root: ");
+    console.log(root);
+
+    console.log("Root leaves: ");
+    console.log(root.leaves());
+    var cell = svg.selectAll("g")
+      .data(root.leaves())
+      .enter().append("g")
+      .attr("transform", function(d) { return "translate(" + d.x0 + "," + d.y0 + ")"; });
+
+      cell.append("rect")
+        .attr("id", function(d) { return d.data.id; })
+        .attr("width", function(d) { return d.x1 - d.x0; })
+        .attr("height", function(d) { return d.y1 - d.y0; })
+        .attr("fill", function(d) { return color(d.parent.data.id) });
+
+    cell.append("clipPath")
+        .attr("id", function(d) { return "clip-" + d.data.id; })
+      .append("use")
+        .attr("xlink:href", function(d) { return "#" + d.data.id; });
+
+    cell.append("text")
+        .attr("clip-path", function(d) { return "url(#clip-" + d.data.id + ")"; })
+      .selectAll("tspan")
+        .data(function(d) { return (d.data.name + " " + d.data.size).split(/(?=[A-Z][^A-Z])/g); })
+      .enter().append("tspan")
+        .attr("x", 4)
+        .attr("y", function(d, i) { return 13 + i * 10; })
+        .text(function(d) { return d; });
+
+    cell.append("title")
+        .text(function(d) { return d.data.id + "\n" + format(d.value); });
+  });
+}
+
+function circlePacking() {
+  $("#svg").empty();
+  $("#treemap").removeClass("btn-primary").addClass("btn-default");
+  $("#circlePacking").removeClass("btn-default").addClass("btn-primary");
+
+  var width = 960;
+  var height = 960;
+
+  var color = d3.scaleSequential(d3.interpolateMagma)
+    .domain([-4, 4]);
+
+  // Thêm svg
+  var svg = d3.select("#svg").append("svg")
+              .attr("width", width)
+              .attr("height", height),
+    diameter = +svg.attr("width"),
+    g = svg.append("g").attr("transform", "translate(2,2)"),
     format = d3.format(",d");
 
-var treemap = d3.treemap()
-    .tile(d3.treemapResquarify)
-    .size([width, height])
-    .round(true)
-    .paddingInner(1);
+  var pack = d3.pack()
+    .size([diameter - 4, diameter - 4]);
 
-// Bắt đầu lấy dữ liệu từ file csv
-d3.csv("csv/bank-additional.csv", function(data) {
-  // Đưa dữ liệu csv vào hàm chuyenCSVThanhJSON để lấy ra dữ liệu kiểu JSON
-  // 3 thuộc tính đó lên tên của cột trong bộ dữ liệu
-  var JSON_Data = chuyenCSVThanhJSON(data, "education", "job", "marital");
-  console.log(JSON_Data);
+  d3.csv("csv/bank-additional.csv", function(data) {
+    // Đưa dữ liệu csv vào hàm chuyenCSVThanhJSON để lấy ra dữ liệu kiểu JSON
+    // 3 thuộc tính đó lên tên của cột trong bộ dữ liệu
+    var JSON_Data = chuyenCSVThanhJSON(data, "education", "job", "marital");
+    console.log("Json Data: ");
+    console.log(JSON_Data);
 
-  var root = d3.hierarchy(JSON_Data)
-      .eachBefore(function(d) { d.data.id = (d.parent ? d.parent.data.id + "." : "") + d.data.name; })
+    root = d3.hierarchy(JSON_Data)
       .sum(function(d) { return d.size; })
-      .sort(function(a, b) { return b.height - a.height || b.value - a.value; });
+      .sort(function(a, b) { return b.value - a.value; });
 
-  treemap(root);
+    var node = g.selectAll(".node")
+      .data(pack(root).descendants())
+      .enter().append("g")
+        .attr("class", function(d) { return d.children ? "node" : "leaf node"; })
+        .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
 
-  var cell = svg.selectAll("g")
-    .data(root.leaves())
-    .enter().append("g")
-    .attr("transform", function(d) { return "translate(" + d.x0 + "," + d.y0 + ")"; });
+    node.append("title")
+        .text(function(d) { return d.data.name + "\n" + format(d.value); });
 
-    cell.append("rect")
-      .attr("id", function(d) { return d.data.id; })
-      .attr("width", function(d) { return d.x1 - d.x0; })
-      .attr("height", function(d) { return d.y1 - d.y0; })
-      .attr("fill", function(d) { return color(d.parent.data.id) });
+    node.append("circle")
+        .attr("r", function(d) { return d.r; })
+        .style("fill", function(d) { return color(d.depth); });
 
-  cell.append("clipPath")
-      .attr("id", function(d) { return "clip-" + d.data.id; })
-    .append("use")
-      .attr("xlink:href", function(d) { return "#" + d.data.id; });
+    node.filter(function(d) { return !d.children; }).append("text")
+        .attr("dy", "0.3em")
+        .text(function(d) { return d.data.name.substring(0, d.r / 3); });
+  });
+}
 
-  cell.append("text")
-      .attr("clip-path", function(d) { return "url(#clip-" + d.data.id + ")"; })
-    .selectAll("tspan")
-      .data(function(d) { return d.data.name.split(/(?=[A-Z][^A-Z])/g); })
-    .enter().append("tspan")
-      .attr("x", 4)
-      .attr("y", function(d, i) { return 13 + i * 10; })
-      .text(function(d) { return d; });
-
-  cell.append("title")
-      .text(function(d) { return d.data.id + "\n" + format(d.value); });
+$( document ).ready(function() {
+    treemap();
 });
+
+//background-image: url('/images/treemapBackGround.jpg'); background-size:cover;
