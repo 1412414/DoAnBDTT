@@ -22,17 +22,17 @@ function kiemTraTonTaiVaTangSize4(valFirst, valSecond, valThird, valForth, json)
 
 
 // Hàm để tăng size bộ giá trị json, bằng cách xét bộ 3 dữ liệu trong data có trong json hay không
-function tangSize4(json, data, firstAttr, secondAttr, thirdAttr, forthAttr) {
+function tangSize4(json, data, firstAttr, secondAttr, thirdAttr, forthAttr, y) {
   $.each(data, function(index, value) {
     // Chỉ xét những dòng trả lời là no
-    if (value.y == "no") {
+    if (value.y == y) {
       kiemTraTonTaiVaTangSize4(value[firstAttr], value[secondAttr], value[thirdAttr], value[forthAttr], json);
     }
   });
 }
 
 // Hàm chuyển dữ liệu CSV thành JSON
-function chuyenCSVThanhJSON4(data, firstAttr, secondAttr, thirdAttr, forthAttr) {
+function chuyenCSVThanhJSON4(data, firstAttr, secondAttr, thirdAttr, forthAttr, y) {
   // Tạo 3 mảng đại diện cho 3 cột dữ liệu
   // Các mảng sẽ chứa các giá trị duy nhất của cột dữ liệu
   // Ví dụ cột giới tính thì chỉ có giá trị là Nam và Nữ
@@ -51,7 +51,7 @@ function chuyenCSVThanhJSON4(data, firstAttr, secondAttr, thirdAttr, forthAttr) 
 
   // Cấu trúc JSON để thực hiện Treemap gồm tên của node và các con của nó
   var JSON_Data = {
-    name: "no",
+    name: y,
     children: []
   }
 
@@ -94,13 +94,13 @@ function chuyenCSVThanhJSON4(data, firstAttr, secondAttr, thirdAttr, forthAttr) 
 
   // Hàm này để tăng size ví dụ: Tuôi 35, giới tính nam, nghề nghiệp công nhân 
   // Có 5 dòng như vậy trong bộ dữ liệu thì size bẳng 5
-  tangSize4(JSON_Data, data, firstAttr, secondAttr, thirdAttr, forthAttr);
+  tangSize4(JSON_Data, data, firstAttr, secondAttr, thirdAttr, forthAttr, y);
 
   // Trả về dữ liệu JSON
   return JSON_Data;
 }
 
-function treemap4(attr1, attr2, attr3, attr4) {
+function treemap4(attr1, attr2, attr3, attr4, y) {
   $("#svg").empty();
   $("#circlePacking").removeClass("btn-primary").addClass("btn-default");
   $("#treemap").removeClass("btn-default").addClass("btn-primary");
@@ -129,7 +129,7 @@ function treemap4(attr1, attr2, attr3, attr4) {
   d3.csv("csv/bank-additional.csv", function(data) {
     // Đưa dữ liệu csv vào hàm chuyenCSVThanhJSON để lấy ra dữ liệu kiểu JSON
     // 3 thuộc tính đó lên tên của cột trong bộ dữ liệu
-    var JSON_Data = chuyenCSVThanhJSON4(data, attr1, attr2, attr3, attr4);
+    var JSON_Data = chuyenCSVThanhJSON4(data, attr1, attr2, attr3, attr4, y);
     console.log("Json Data: ");
     console.log(JSON_Data);
 
@@ -175,7 +175,7 @@ function treemap4(attr1, attr2, attr3, attr4) {
   });
 }
 
-function circlePacking4(attr1, attr2, attr3, attr4) {
+function circlePacking4(attr1, attr2, attr3, attr4, y) {
   $("#svg").empty();
   $("#treemap").removeClass("btn-primary").addClass("btn-default");
   $("#circlePacking").removeClass("btn-default").addClass("btn-primary");
@@ -200,7 +200,7 @@ function circlePacking4(attr1, attr2, attr3, attr4) {
   d3.csv("csv/bank-additional.csv", function(data) {
     // Đưa dữ liệu csv vào hàm chuyenCSVThanhJSON để lấy ra dữ liệu kiểu JSON
     // 3 thuộc tính đó lên tên của cột trong bộ dữ liệu
-    var JSON_Data = chuyenCSVThanhJSON4(data, attr1, attr2, attr3, attr4);
+    var JSON_Data = chuyenCSVThanhJSON4(data, attr1, attr2, attr3, attr4, y);
     console.log("Json Data: ");
     console.log(JSON_Data);
 
@@ -226,3 +226,16 @@ function circlePacking4(attr1, attr2, attr3, attr4) {
         .text(function(d) { return d.data.name.substring(0, d.r / 3); });
   });
 }
+
+$(function() {
+  $('#treemap4').click(function() {
+
+  treemap4($("#child1").val(), $("#child2").val(), $("#child3").val(), $("#child4").val(), $("input[name='y']:checked").val());
+  });
+
+
+  $('#circlePacking4').click(function() {
+    circlePacking4($("#child1").val(), $("#child2").val(), $("#child3").val(), $("#child4").val(), $("input[name='y']:checked").val());
+  });
+});
+

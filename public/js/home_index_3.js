@@ -45,7 +45,7 @@ function chuyenCSVThanhJSON3(data, firstAttr, secondAttr, thirdAttr, y) {
 
   // Cấu trúc JSON để thực hiện Treemap gồm tên của node và các con của nó
   var JSON_Data = {
-    name: "no",
+    name: y,
     children: []
   }
 
@@ -212,8 +212,18 @@ function circlePacking3(attr1, attr2, attr3, y) {
   });
 }
 
-$( document ).ready(function() {
-    treemap3('marital', 'education', 'job', 'yes');
+$(function() {
+  $('#treemap3').click(function() {
+    console.log($("input[name='y']:checked").val());
+
+  treemap3($("#child1").val(), $("#child2").val(), $("#child3").val(), $("input[name='y']:checked").val());
+  });
+
+
+  $('#circlePacking3').click(function() {
+    circlePacking3($("#child1").val(), $("#child2").val(), $("#child3").val(), $("input[name='y']:checked").val());
+  });
 });
+
 
 //background-image: url('/images/treemapBackGround.jpg'); background-size:cover;
