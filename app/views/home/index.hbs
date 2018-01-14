@@ -14,11 +14,41 @@
     <script src="/bower_components/d3/d3.min.js"></script>
     <!-- D3 Hierarchy -->
     <script src="/node_modules/d3-hierarchy/build/d3-hierarchy.min.js"></script>
+    
+    <style>
+        .node text {
+          font: 10px sans-serif;
+          text-anchor: middle;
+        }
 
+        circle:hover {
+            stroke: #000;
+            stroke-width: 1.2px;
+        }
+        
+        rect {
+            stroke: white;
+            stroke-width: 1.5px;
+        }
+
+        rect:hover {
+            fill-opacity: 0.85;
+        }
+        
+        text tspan {
+            font: 15px sans-serif;
+        }
+    </style>
 </head>
 
 <body>
-    <div class="col-lg-12" id="svg"></div>
+    <br />
+    <div class="container-fluid">
+        <button type="button" class="btn btn-primary" onclick="treemap()" id="treemap">Treemap</button>
+        <button type="button" class="btn btn-default" onclick="circlePacking()" id="circlePacking">Circle Packing</button>    
+    </div>
+    <br />
+    <div class="col-lg-12" id="svg" style="text-align:center;"></div>
 </body>
 
 </html>
