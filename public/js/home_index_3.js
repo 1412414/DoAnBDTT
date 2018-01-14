@@ -1,27 +1,6 @@
-// Kiểm tra xem các giá trị cột attr trong data có thể đưa vào array hay không
-// Thêm vào được khi trong array không chứa giá trị này
-// VD: cột tuổi trong data
-// giá trị là 30 và đã tồn tại trong bảng array thì không thêm vào
-// Giá trị là 15 chưa tồn tại trong bảng array thì được thêm vào
-function kiemTraCoTheThemVaoMang(array, data, attr) {
-  $.each(data, function(index, value) {
-    var canAdd = 1;
-
-    $.each(array, function(index2, value2) {
-      if (value[attr] == value2) {
-        canAdd = 0;
-      }
-    });
-
-    if (canAdd == 1) {
-      array.push(value[attr]);
-    }
-  });
-}
-
 // Hàm kiểm tra xem bộ 3 giá trị này có trong json data không nếu có thì tăng size
 // VD nam 15 tuổi nghề nghiệp công nhân có trong json thì tăng size
-function kiemTraTonTaiVaTangSize(valFirst, valSecond, valThird, json) {
+function kiemTraTonTaiVaTangSize3(valFirst, valSecond, valThird, json) {
   $.each(json.children, function(indexFirst, valueFirst) {
     if (valueFirst.name == valFirst) {
       $.each(valueFirst.children, function(indexSecond, valueSecond) {
@@ -39,17 +18,17 @@ function kiemTraTonTaiVaTangSize(valFirst, valSecond, valThird, json) {
 
 
 // Hàm để tăng size bộ giá trị json, bằng cách xét bộ 3 dữ liệu trong data có trong json hay không
-function tangSize(json, data, firstAttr, secondAttr, thirdAttr) {
+function tangSize3(json, data, firstAttr, secondAttr, thirdAttr, y) {
   $.each(data, function(index, value) {
     // Chỉ xét những dòng trả lời là no
-    if (value.y == "no") {
-      kiemTraTonTaiVaTangSize(value[firstAttr], value[secondAttr], value[thirdAttr], json);
+    if (value.y == y) {
+      kiemTraTonTaiVaTangSize3(value[firstAttr], value[secondAttr], value[thirdAttr], json);
     }
   });
 }
 
 // Hàm chuyển dữ liệu CSV thành JSON
-function chuyenCSVThanhJSON(data, firstAttr, secondAttr, thirdAttr) {
+function chuyenCSVThanhJSON3(data, firstAttr, secondAttr, thirdAttr, y) {
   // Tạo 3 mảng đại diện cho 3 cột dữ liệu
   // Các mảng sẽ chứa các giá trị duy nhất của cột dữ liệu
   // Ví dụ cột giới tính thì chỉ có giá trị là Nam và Nữ
@@ -100,13 +79,13 @@ function chuyenCSVThanhJSON(data, firstAttr, secondAttr, thirdAttr) {
 
   // Hàm này để tăng size ví dụ: Tuôi 35, giới tính nam, nghề nghiệp công nhân 
   // Có 5 dòng như vậy trong bộ dữ liệu thì size bẳng 5
-  tangSize(JSON_Data, data, firstAttr, secondAttr, thirdAttr);
+  tangSize3(JSON_Data, data, firstAttr, secondAttr, thirdAttr, y);
 
   // Trả về dữ liệu JSON
   return JSON_Data;
 }
 
-function treemap() {
+function treemap3(attr1, attr2, attr3, y) {
   $("#svg").empty();
   $("#circlePacking").removeClass("btn-primary").addClass("btn-default");
   $("#treemap").removeClass("btn-default").addClass("btn-primary");
@@ -135,7 +114,7 @@ function treemap() {
   d3.csv("csv/bank-additional.csv", function(data) {
     // Đưa dữ liệu csv vào hàm chuyenCSVThanhJSON để lấy ra dữ liệu kiểu JSON
     // 3 thuộc tính đó lên tên của cột trong bộ dữ liệu
-    var JSON_Data = chuyenCSVThanhJSON(data, "education", "job", "marital");
+    var JSON_Data = chuyenCSVThanhJSON3(data, attr1, attr2, attr3, y);
     console.log("Json Data: ");
     console.log(JSON_Data);
 
@@ -181,7 +160,7 @@ function treemap() {
   });
 }
 
-function circlePacking() {
+function circlePacking3(attr1, attr2, attr3, y) {
   $("#svg").empty();
   $("#treemap").removeClass("btn-primary").addClass("btn-default");
   $("#circlePacking").removeClass("btn-default").addClass("btn-primary");
@@ -206,7 +185,7 @@ function circlePacking() {
   d3.csv("csv/bank-additional.csv", function(data) {
     // Đưa dữ liệu csv vào hàm chuyenCSVThanhJSON để lấy ra dữ liệu kiểu JSON
     // 3 thuộc tính đó lên tên của cột trong bộ dữ liệu
-    var JSON_Data = chuyenCSVThanhJSON(data, "education", "job", "marital");
+    var JSON_Data = chuyenCSVThanhJSON3(data, attr1, attr2, attr3, y);
     console.log("Json Data: ");
     console.log(JSON_Data);
 
@@ -234,7 +213,7 @@ function circlePacking() {
 }
 
 $( document ).ready(function() {
-    treemap();
+    treemap3('marital', 'education', 'job', 'yes');
 });
 
 //background-image: url('/images/treemapBackGround.jpg'); background-size:cover;
