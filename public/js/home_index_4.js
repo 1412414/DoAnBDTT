@@ -2,13 +2,15 @@
 // VD nam 15 tuổi nghề nghiệp công nhân có trong json thì tăng size
 function kiemTraTonTaiVaTangSize4(valFirst, valSecond, valThird, valForth, json) {
   $.each(json.children, function(indexFirst, valueFirst) {
+                  console.log("Thử: ");
+    console.log(valFirst + valSecond + valThird + valForth);
     if (valueFirst.name == valFirst) {
       $.each(valueFirst.children, function(indexSecond, valueSecond) {
         if (valueSecond.name == valSecond) {
           $.each(valueSecond.children, function(indexThird, valueThird) {
             if (valueThird.name == valThird) {
               $.each(valueThird.children, function(indexForth, valueForth) {
-                if (valueForth.name = valForth) {
+                if (valueForth.name == valForth) {
                   valueForth.size += 1;
                 }
               });
@@ -127,6 +129,13 @@ function treemap4(attr1, attr2, attr3, attr4, y) {
 
   // Bắt đầu lấy dữ liệu từ file csv
   d3.csv("csv/bank-additional.csv", function(data) {
+    if (attr1 == "age" || attr2 == "age" || attr3 == "age" || attr4 == "age") {
+      thayDoiNhomTuoi(data);
+    }
+
+    if (attr1 == "duration" || attr2 == "duration" || attr3 == "duration" || attr4 == "duration") {
+          thayDoiDoDaiCuocGoi(data);
+    }
     // Đưa dữ liệu csv vào hàm chuyenCSVThanhJSON để lấy ra dữ liệu kiểu JSON
     // 3 thuộc tính đó lên tên của cột trong bộ dữ liệu
     var JSON_Data = chuyenCSVThanhJSON4(data, attr1, attr2, attr3, attr4, y);
@@ -164,7 +173,7 @@ function treemap4(attr1, attr2, attr3, attr4, y) {
     cell.append("text")
         .attr("clip-path", function(d) { return "url(#clip-" + d.data.id + ")"; })
       .selectAll("tspan")
-        .data(function(d) { return (d.data.name + " " + d.data.size).split(/(?=[A-Z][^A-Z])/g); })
+        .data(function(d) { return (d.data.name + " - " + d.data.size).split(/(?=[A-Z][^A-Z])/g); })
       .enter().append("tspan")
         .attr("x", 4)
         .attr("y", function(d, i) { return 13 + i * 10; })
@@ -198,6 +207,14 @@ function circlePacking4(attr1, attr2, attr3, attr4, y) {
     .size([diameter - 4, diameter - 4]);
 
   d3.csv("csv/bank-additional.csv", function(data) {
+    if (attr1 == "age" || attr2 == "age" || attr3 == "age" || attr4 == "age") {
+      thayDoiNhomTuoi(data);
+    }
+
+    if (attr1 == "duration" || attr2 == "duration" || attr3 == "duration" || attr4 == "duration") {
+      thayDoiDoDaiCuocGoi(data);
+    }
+
     // Đưa dữ liệu csv vào hàm chuyenCSVThanhJSON để lấy ra dữ liệu kiểu JSON
     // 3 thuộc tính đó lên tên của cột trong bộ dữ liệu
     var JSON_Data = chuyenCSVThanhJSON4(data, attr1, attr2, attr3, attr4, y);
@@ -227,15 +244,4 @@ function circlePacking4(attr1, attr2, attr3, attr4, y) {
   });
 }
 
-$(function() {
-  $('#treemap4').click(function() {
-
-  treemap4($("#child1").val(), $("#child2").val(), $("#child3").val(), $("#child4").val(), $("input[name='y']:checked").val());
-  });
-
-
-  $('#circlePacking4').click(function() {
-    circlePacking4($("#child1").val(), $("#child2").val(), $("#child3").val(), $("#child4").val(), $("input[name='y']:checked").val());
-  });
-});
 

@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>BDTT</title>
-
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
-
     <!-- jQuery library -->
     <script src="/bower_components/jquery/dist/jquery.min.js"></script>
     <!-- Latest compiled JavaScript -->
@@ -18,99 +17,144 @@
     <script src="js/home_index_3.js"></script>
     <script src="js/home_index_4.js"></script>
     <style>
-        .node text {
-          font: 10px sans-serif;
-          text-anchor: middle;
-        }
+    .node text {
+        font: 10px sans-serif;
+        text-anchor: middle;
+    }
 
-        circle:hover {
-            stroke: #000;
-            stroke-width: 1.2px;
-        }
-        
-        rect {
-            stroke: white;
-            stroke-width: 1.5px;
-        }
+    circle:hover {
+        stroke: #000;
+        stroke-width: 1.2px;
+    }
 
-        rect:hover {
-            fill-opacity: 0.85;
-        }
-        
-        text tspan {
-            font: 15px sans-serif;
-        }
+    rect {
+        stroke: white;
+        stroke-width: 1.5px;
+    }
+
+    rect:hover {
+        fill-opacity: 0.9;
+    }
+
+    text tspan {
+        font: 15px sans-serif;
+    }
     </style>
 </head>
 
 <body>
-    <div class="col-md-12">
-    <div class = "col-md-3">
-        <div class="form-group">
-  <label for="sel1">Chọn nhóm thuộc tính đầu tiên:</label>
-  <select class="form-control" id="sel1" onchange="selectattribute1(this)">
-    <option value="customer">Nhóm thông tin khách hàng</option>
-    <option value="campaign">Nhóm thông tin liên quan đến chiến dịch</option>
-    <option value="social">Nhóm thông tin liên quan đến kinh tế - xã hội</option>   
-  </select>
-  <label for="sel11">Chọn thuộc tính đầu tiên:</label>
-  <select class="form-control" id="child1">   
-  </select>
-</div>
-</div>
-    <div class = "col-md-3">
-        <div class="form-group">
-  <label for="sel2">Chọn nhóm thuộc tính thứ 2:</label>
-  <select class="form-control" id="sel2" onchange="selectattribute2(this)">
-    <option value="customer">Nhóm thông tin khách hàng</option>
-    <option value="campaign">Nhóm thông tin liên quan đến chiến dịch</option>
-    <option value="social">Nhóm thông tin liên quan đến kinh tế - xã hội</option>   
-  </select>
-  <label for="sel21">Chọn thuộc tính thứ 2:</label>
-  <select class="form-control" id="child2">   
-  </select>
-</div>
-
-    </div>
-    <div class = "col-md-3">
-        <div class="form-group">
-  <label for="sel3"">Chọn nhóm thuộc tính thứ 3:</label>
-  <select class="form-control" id="sel3" onchange="selectattribute3(this)">
-    <option value="customer">Nhóm thông tin khách hàng</option>
-    <option value="campaign">Nhóm thông tin liên quan đến chiến dịch</option>
-    <option value="social">Nhóm thông tin liên quan đến kinh tế - xã hội</option>   
-  </select>
-  <label for="sel1">Chọn thuộc tính thứ 3:</label>
-<select class="form-control" id="child3">   
-  </select>
-</div>
-</div>
-<div class = "col-md-3">
-        <div class="form-group">
-  <label for="sel4">Chọn nhóm thuộc tính thứ 4:</label>
-  <select class="form-control" id="sel4" onchange="selectattribute4(this)">
-    <option value="customer">Nhóm thông tin khách hàng</option>
-    <option value="campaign">Nhóm thông tin liên quan đến chiến dịch</option>
-    <option value="social">Nhóm thông tin liên quan đến kinh tế - xã hội</option>   
-  </select>
-  <label for="sel1">Chọn thuộc tính thứ 4:</label>
-  <select class="form-control" id="child4">   
-  </select>
-</div>
-    </div>
- </div>
     <br />
-
-
-  <h3>Chọn yes hoặc no</h3>
-  <input type="radio" name="y" id="yes" value="yes">yes<br>
-  <input type="radio" name="y" id="blue" value="no">no
-   <div class="container-fluid">
-        <button type="button" class="btn btn-primary"  id="treemap3">Treemap 3</button>
-        <button type="button" class="btn btn-primary"  id="circlePacking3">Circle Packing 3</button>    
-                <button type="button" class="btn btn-primary"  id="treemap4">Treemap 4</button>
-        <button type="button" class="btn btn-primary"  id="circlePacking4">Circle Packing 4</button>    
-
+    <div class="container-fluid ">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="sel1">Chọn nhóm thuộc tính đầu tiên:</label>
+                    <select class="form-control" id="sel1" onchange="selectattribute1(this)">
+                        <option hidden></option>
+                        <option value="customer">Nhóm thông tin khách hàng</option>
+                        <option value="campaign">Nhóm thông tin liên quan đến chiến dịch</option>
+                        <option value="social">Nhóm thông tin liên quan đến kinh tế - xã hội</option>
+                    </select>
+                    <label for="sel11">Chọn thuộc tính đầu tiên:</label>
+                    <select class="form-control" id="child1">
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="sel2">Chọn nhóm thuộc tính thứ 2:</label>
+                    <select class="form-control" id="sel2" onchange="selectattribute2(this)">
+                        <option hidden></option>
+                        <option value="customer">Nhóm thông tin khách hàng</option>
+                        <option value="campaign">Nhóm thông tin liên quan đến chiến dịch</option>
+                        <option value="social">Nhóm thông tin liên quan đến kinh tế - xã hội</option>
+                    </select>
+                    <label for="sel21">Chọn thuộc tính thứ 2:</label>
+                    <select class="form-control" id="child2">
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="sel3" ">Chọn nhóm thuộc tính thứ 3:</label>
+                    <select class="form-control " id="sel3 " onchange="selectattribute3(this) ">
+                        <option hidden></option>
+                        <option value="customer">Nhóm thông tin khách hàng</option>
+                        <option value="campaign">Nhóm thông tin liên quan đến chiến dịch</option>
+                        <option value="social">Nhóm thông tin liên quan đến kinh tế - xã hội</option>   
+                    </select>
+                    <label for="sel1">Chọn thuộc tính thứ 3:</label>
+                    <select class="form-control" id="child3">   
+                    </select>
+                </div>
+            </div>
+            <div class = "col-md-3">
+                <div class="form-group">
+                    <label for="sel4">Chọn nhóm thuộc tính thứ 4:</label>
+                    <select class="form-control" id="sel4" onchange="selectattribute4(this)">
+                        <option hidden></option>
+                        <option value="customer">Nhóm thông tin khách hàng</option>
+                        <option value="campaign">Nhóm thông tin liên quan đến chiến dịch</option>
+                        <option value="social">Nhóm thông tin liên quan đến kinh tế - xã hội</option>   
+                    </select>
+                    <label for="sel1">Chọn thuộc tính thứ 4:</label>
+                    <select class="form-control" id="child4">   
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <form id="ageGroup" class="form-inline">
+                    <div class="form-group">
+                        <label>Độ dài cuộc gọi: </label><br />
+                        Từ <input type="number" id="duration1From" class="form-control" value="0">
+                        Đến <input type="number" id="duration1To" class="form-control" value="100"><br />
+                        Từ <input type="number" id="duration2From" class="form-control" value="101">
+                        Đến <input type="number" id="duration2To" class="form-control" value="300"><br />
+                        Từ <input type="number" id="duration3From" class="form-control" value="301">
+                        Đến <input type="number" id="duration3To" class="form-control" value="700"><br />
+                        Từ <input type="number" id="duration4From" class="form-control" value="701">
+                        Đến <input type="number" id="duration4To" class="form-control" value="10000"><br />
+                    </div>
+                </form>
+            </div>
+            <div class="col-md-6">
+                <form id="ageGroup" class="form-inline">
+                    <div class="form-group">
+                        <label>Nhóm tuổi: </label><br />
+                        <label>Nhóm 1: </label>
+                        Từ <input type="number" id="ageGroup1From" class="form-control" value="0">
+                        Đến <input type="number" id="ageGroup1To" class="form-control" value="14"><br />
+                        <label>Nhóm 2: </label>
+                        Từ <input type="number" id="ageGroup2From" class="form-control" value="15">
+                        Đến <input type="number" id="ageGroup2To" class="form-control" value="34"><br />
+                        <label>Nhóm 3: </label>
+                        Từ <input type="number" id="ageGroup3From" class="form-control" value="35">
+                        Đến <input type="number" id="ageGroup3To" class="form-control" value="59"><br />
+                        <label>Nhóm 4: </label>
+                        Từ <input type="number" id="ageGroup4From" class="form-control" value="60">
+                        Đến <input type="number" id="ageGroup4To" class="form-control" value="150"><br />
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <label>Chọn yes hoặc no: </label>
+                <input type="radio" name="y" id="yes" value="yes" checked>yes  
+                <input type="radio" name="y" id="blue" value="no">no
+            </div>
+        </div>
+        <br />
+        <div class="row">
+            <div class="col-md-12">   
+                <button type="button" class="btn btn-default" id="treemap3">Treemap 3</button>
+                <button type="button" class="btn btn-default" id="circlePacking3">Circle Packing 3</button>    
+                <button type="button" class="btn btn-default" id="treemap4">Treemap 4</button>
+                <button type="button" class="btn btn-default" id="circlePacking4">Circle Packing 4</button>  
+            </div> 
+        </div>
     </div>
     <br />
     <div class="col-lg-12" id="svg" style="text-align:center;"></div>
